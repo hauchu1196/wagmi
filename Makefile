@@ -2,9 +2,9 @@
 
 # Variables
 BINARY_NAME=wagmi
-VERSION=$(shell git describe --tags --always --dirty)
+VERSION=1.0.0
 BUILD_TIME=$(shell date +%FT%T%z)
-LDFLAGS=-ldflags "-X main.version=$(VERSION) -X main.buildTime=$(BUILD_TIME)"
+LDFLAGS=-ldflags "-X github.com/hauchu1196/wagmi/cmd.version=$(VERSION) -X github.com/hauchu1196/wagmi/cmd.buildTime=$(BUILD_TIME)"
 
 # Default target
 all: build
