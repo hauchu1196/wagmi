@@ -2,7 +2,7 @@
 
 # Variables
 BINARY_NAME=wagmi
-VERSION=1.0.0
+VERSION=0.0.1
 BUILD_TIME=$(shell date +%FT%T%z)
 LDFLAGS=-ldflags "-X github.com/hauchu1196/wagmi/cmd.version=$(VERSION) -X github.com/hauchu1196/wagmi/cmd.buildTime=$(BUILD_TIME)"
 
@@ -49,8 +49,11 @@ build-windows:
 
 # Create release package
 release: clean build-all
-	@echo "Creating release package..."
-	tar -czf bin/$(BINARY_NAME)-$(VERSION).tar.gz bin/$(BINARY_NAME)-*
+	@echo "Creating release packages..."
+	zip -j bin/$(BINARY_NAME)-$(VERSION)-linux-amd64.zip bin/$(BINARY_NAME)-linux-amd64
+	zip -j bin/$(BINARY_NAME)-$(VERSION)-darwin-intel.zip bin/$(BINARY_NAME)-darwin-intel
+	zip -j bin/$(BINARY_NAME)-$(VERSION)-darwin-arm.zip bin/$(BINARY_NAME)-darwin-arm
+	zip -j bin/$(BINARY_NAME)-$(VERSION)-windows-amd64.zip bin/$(BINARY_NAME)-windows-amd64.exe
 
 # Default target
 .DEFAULT_GOAL := help 
