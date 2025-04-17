@@ -3,7 +3,7 @@ package blockpi
 import "fmt"
 
 func (c *Client) FirstConfirm() error {
-	_, err := c.call("hub_firstConfirm", map[string]interface{}{}, true)
+	_, err := c.call("hub_skuFirstConfirm", map[string]interface{}{}, true)
 	return err
 }
 
