@@ -113,7 +113,7 @@ var setuprpcCmd = &cobra.Command{
 
 func init() {
 	setuprpcCmd.Flags().StringVarP(&flagChain, "chain", "c", "base", "Tên chain cần lấy RPC (vd: base, base-sepolia, ethereum, ethereum-sepolia)")
-	setuprpcCmd.Flags().BoolVarP(&flagUseMailDomain, "mail-domain", "m", false, "Loại mail (vd: maildomain)")
+	setuprpcCmd.Flags().BoolVarP(&flagUseMailDomain, "use-mail-domain", "m", false, "Sử dụng mail domain thay vì ngẫu nhiên")
 	rootCmd.AddCommand(setuprpcCmd)
 }
 
