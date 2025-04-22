@@ -10,7 +10,8 @@ import (
 )
 
 type SetupRPCRequest struct {
-	Chain string `json:"chain"`
+	Chain         string `json:"chain"`
+	UseMailDomain bool   `json:"useMailDomain"`
 }
 
 type SetupRPCResponse struct {
@@ -27,7 +28,7 @@ func setupRPCHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	result, err := setupRPC(req.Chain)
+	result, err := setupRPC(req.Chain, req.UseMailDomain)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

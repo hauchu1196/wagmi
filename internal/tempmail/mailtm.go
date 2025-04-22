@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"math/rand"
 	"net/http"
 	"time"
 )
@@ -157,16 +156,15 @@ func (c *MailTMClient) FetchMessageHTML(msgID string) (string, error) {
 	return "", fmt.Errorf("không thể parse nội dung email")
 }
 
-// --- Internal: Random string + domain fetch ---
-
-func genRandomString(n int) string {
-	letters := []rune("abcdefghijklmnopqrstuvwxyz0123456789")
-	s := make([]rune, n)
-	for i := range s {
-		s[i] = letters[rand.Intn(len(letters))]
-	}
-	return string(s)
+func (c *MailTMClient) GetEmail() string {
+	return c.Email
 }
+
+func (c *MailTMClient) GetPassword() string {
+	return c.Password
+}
+
+// --- Internal: Random string + domain fetch ---
 
 func fetchRandomDomain() (string, error) {
 	resp, err := http.Get(baseURL + "/domains")

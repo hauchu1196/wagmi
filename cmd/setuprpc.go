@@ -10,7 +10,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var chain string
+var flagChain string
+var flagUseMailDomain bool
 
 type SetupRPCResult struct {
 	Email    string
@@ -18,24 +19,36 @@ type SetupRPCResult struct {
 	RPC      string
 	WSS      string
 }
+type MailType string
 
-func setupRPC(chain string) (*SetupRPCResult, error) {
+func getMailClient(useMailDomain bool) (tempmail.TempMail, error) {
+	if useMailDomain {
+		fmt.Println("🌐 Sử dụng mail domain")
+		return tempmail.NewMailDomainMailPlusClient()
+	}
+	fmt.Println("📨 Sử dụng mail ngẫu nhiên")
+	return tempmail.NewMailPlusClient()
+}
+
+func setupRPC(chain string, useMailDomain bool) (*SetupRPCResult, error) {
 	chainID := getChainID(chain)
 	if chainID == 0 {
 		return nil, fmt.Errorf("unsupported chain: %s", chain)
 	}
 
 	// Step 1: Create temporary email
-	mailClient, err := tempmail.NewClient()
+	var mailClient tempmail.TempMail
+	var err error
+	mailClient, err = getMailClient(useMailDomain)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create temporary email: %v", err)
 	}
-	fmt.Println("📩 Email:", mailClient.Email)
-	fmt.Println("🔐 Password:", mailClient.Password)
+	fmt.Println("📩 Mail:", mailClient.GetEmail())
+	fmt.Println("🔐 Mail Password:", mailClient.GetPassword())
 
 	// Step 2: Register BlockPI account
 	client := blockpi.NewClient()
-	if err := client.Register(mailClient.Email, "dd6064eab545bb5adb3d514c8398f1d0"); err != nil {
+	if err := client.Register(mailClient.GetEmail(), "dd6064eab545bb5adb3d514c8398f1d0"); err != nil {
 		return nil, fmt.Errorf("registration failed: %v", err)
 	}
 	fmt.Println("✅ Đăng ký thành công.")
@@ -80,8 +93,8 @@ func setupRPC(chain string) (*SetupRPCResult, error) {
 	fmt.Println("🔌 WSS:", wss)
 
 	return &SetupRPCResult{
-		Email:    mailClient.Email,
-		Password: mailClient.Password,
+		Email:    mailClient.GetEmail(),
+		Password: "123456Aa@",
 		RPC:      rpc,
 		WSS:      wss,
 	}, nil
@@ -91,7 +104,7 @@ var setuprpcCmd = &cobra.Command{
 	Use:   "setup-rpc",
 	Short: "Tạo tài khoản BlockPI, xác minh email và lấy RPC/WSS",
 	Run: func(cmd *cobra.Command, args []string) {
-		_, err := setupRPC(chain)
+		_, err := setupRPC(flagChain, flagUseMailDomain)
 		if err != nil {
 			log.Fatalf("❌ %v", err)
 		}
@@ -99,7 +112,8 @@ var setuprpcCmd = &cobra.Command{
 }
 
 func init() {
-	setuprpcCmd.Flags().StringVarP(&chain, "chain", "c", "base", "Tên chain cần lấy RPC (vd: base, base-sepolia, ethereum, ethereum-sepolia)")
+	setuprpcCmd.Flags().StringVarP(&flagChain, "chain", "c", "base", "Tên chain cần lấy RPC (vd: base, base-sepolia, ethereum, ethereum-sepolia)")
+	setuprpcCmd.Flags().BoolVarP(&flagUseMailDomain, "mail-domain", "m", false, "Loại mail (vd: maildomain)")
 	rootCmd.AddCommand(setuprpcCmd)
 }
 
