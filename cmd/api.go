@@ -11,7 +11,7 @@ import (
 
 type SetupRPCRequest struct {
 	Chain         string `json:"chain"`
-	UseMailDomain bool   `json:"useMailDomain"`
+	UseMailDomain bool   `json:"use_mail_domain"`
 }
 
 type SetupRPCResponse struct {
