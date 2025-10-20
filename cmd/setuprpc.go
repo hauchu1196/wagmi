@@ -129,6 +129,8 @@ func getChainID(name string) int {
 		return 1006
 	case "ethereum-sepolia":
 		return 1011
+	case "bnb":
+		return 2
 	default:
 		return 0
 	}
